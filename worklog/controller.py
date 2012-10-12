@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 class WorkLogController(controller.CementBaseController):
     class Meta:
-        label = 'WorkLog'
+        label = 'base'
         description = 'WorkLog entry point'
 
 class ActivityWriter(controller.CementBaseController):
