@@ -1,5 +1,9 @@
+========
 WorkLog
 ========
+
+Usage
+======
 
 Start an activity
 ::
@@ -57,3 +61,11 @@ And wrap up
 	$ wl list
 	2012-07-11 09:52:34.045907 start  fuuu
 	2012-07-11 09:52:37.928545 end    kek
+
+Install
+=========
+
+::
+
+    $ python setup.py install
+    $ alembic upgrade head
