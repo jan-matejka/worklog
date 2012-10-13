@@ -3,7 +3,7 @@
 project=$1
 shift
 
-ref=`wl getref -p $1` || exit 0
+ref=`wl getref -p "${project}"` || exit 0
 
 case "$2,$3" in
 	,|template,)
