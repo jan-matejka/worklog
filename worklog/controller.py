@@ -4,10 +4,10 @@
 from __future__ import print_function
 import logging
 from cement.core import foundation, controller, handler
-from .model import WorkLog
+from .model import WorkLog, StartAttrs
 from datetime import datetime, timedelta
 
-log = logging.getLogger(__name__)
+#log = logging.getLogger(__name__)
 
 class WorkLogController(controller.CementBaseController):
     class Meta:
@@ -21,18 +21,48 @@ class ActivityWriter(controller.CementBaseController):
         wl.description = " ".join(self.pargs.args)
         self.app.session.add(wl)
         self.app.session.commit()
+        return wl
 
 class StartController(ActivityWriter):
     class Meta:
         interface = controller.IController
         label = 'start'
         description = 'start an activity'
-        arguments = [(['args'], dict(metavar='activity', type=str, nargs='+'))]
+        arguments = [
+            (['-p', '--project'], dict(type=str, help='project name, used for matching git repository') ),
+            (['-r', '--reference'], dict(type=int, help='issue reference number, used for prepare-commit-msg hook')),
+            (['args'], dict(metavar='activity', type=str, nargs='*', help='activity name/description')),
+        ]
         aliases= ['s']
+
+    def validate_args(self):
+        err = False
+        if not self.pargs.project and not self.pargs.reference:
+            if self.pargs.args == []:
+                err = True
+        elif bool(self.pargs.project) ^ bool(self.pargs.reference):
+            err = True
+        else:
+            self.pargs.args.insert(0, "project: %s; ref: %s" % (self.pargs.project, self.pargs.reference))
+        if err:
+            raise RuntimeError("there must be args or both project and reference specified")
+
+    def _start_attrs(self):
+        if not self.pargs.project:
+            return
+
+        sa = StartAttrs()
+        sa.project = self.pargs.project
+        sa.ref = self.pargs.reference
+        self.wl.start_attrs = sa
+        self.app.session.add(sa)
+        self.app.session.commit()
 
     @controller.expose()
     def default(self):
-        self._activity()
+        self.validate_args()
+        self.wl = self._activity()
+        self._start_attrs()
 
 class EndController(ActivityWriter):
     class Meta:
