@@ -26,11 +26,12 @@ setup(
     ),
 
     install_requires = [
-        "cement", # aliases will need probably like >1.9.12 which hasnt been released yet
+        "cement",
         "setuptools",
         "sqlalchemy",
         "pyxdg",
         "pysqlite",
+        "alembic",
     ],
 
     entry_points = {
