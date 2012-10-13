@@ -34,5 +34,4 @@ def init(db_url):
     session = scoped_session(sessionmaker(bind=e, autoflush=True))
 
     Base.metadata.bind = e
-    Base.metadata.create_all()
     return session
