@@ -31,6 +31,15 @@ class WorkLog(Base):
     def __unicode__(self):
         return "%s %s %s" % (self.created_at, self.activity.ljust(6), self.description)
 
+    @staticmethod
+    def iterate(fsm, session):
+        q = session.query(WorkLog).order_by(WorkLog.created_at.desc()).all()
+
+        while fsm.continue_():
+            fsm.got(q.pop(0))
+
+        return fsm.result()
+
 class StartAttrs(Base):
     __tablename__ = 'start_attrs'
 

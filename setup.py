@@ -4,6 +4,15 @@
 from setuptools import setup, find_packages
 import worklog
 
+import sys
+from os.path import expanduser, join
+
+def get_usrdir():
+    if '--user' in sys.argv:
+        # FIXME
+        return expanduser("~/.local")
+    return '/usr'
+
 setup(
     name='worklog',
     version=worklog.__version__,
@@ -26,4 +35,8 @@ setup(
 
     entry_points = {
         'console_scripts': ['wl = worklog.core:main']},
+
+    data_files = [
+        (join(get_usrdir(), 'lib', 'worklog', 'git-hooks'), ['git-hooks/prepare-commit-msg'])
+    ]
 )

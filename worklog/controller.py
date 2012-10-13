@@ -5,7 +5,8 @@ from __future__ import print_function
 import logging
 from cement.core import foundation, controller, handler
 from .model import WorkLog, StartAttrs
-from datetime import datetime, timedelta
+from datetime import datetime
+from . import fsm
 
 #log = logging.getLogger(__name__)
 
@@ -120,8 +121,7 @@ class DiffController(controller.CementBaseController):
     def default(self):
         self.log.debug(self.pargs)
         if self.pargs.full:
-            items, state = get_activity(self.app.session, self.log)
-            # FIXME: fix get_activity for this use-case so if the first record isnt END state, create it from now()
+            items, state = WorkLog.iterate(fsm.DiffGetter(), self.app.session)
             diff = state[2]
         else:
             wl = self.app.session.query(WorkLog).order_by(WorkLog.created_at.desc()).limit(1).one()
@@ -129,33 +129,6 @@ class DiffController(controller.CementBaseController):
             items = [wl]
 
         display_diff(items, diff)
-
-def get_activity(session, log):
-    q = session.query(WorkLog).order_by(WorkLog.created_at.desc()).all()
-
-    ALG_START=0
-    START='start'
-    END='end'
-    RESUME='resume'
-    states = {
-        # CURSTATE: NEXT_STATES, NEW_DIFFSUM_FN(cur diff sum, prev item, cur item)
-        ALG_START: ([END], lambda _, _1, _2: timedelta(0)),
-        END: ([START, RESUME], lambda s, p, i: s + (p.created_at - i.created_at)),
-        RESUME: ([END], lambda s, _, _1: s),
-    }
-
-    state = (ALG_START, None, None)
-    #       current state, prev item, diff sum
-    items = []
-    while not state[0] == START:
-        item = q.pop(0)
-        if item.activity not in states[state[0]][0]:
-            raise RuntimeError("invalid state")
-
-        state = (item.activity, item, states[state[0]][1](state[2], state[1], item))
-        log.debug("new state: (%s, %s, %s)" % state)
-        items.insert(0, item)
-    return items, state
 
 class PopController(controller.CementBaseController):
     class Meta:
@@ -167,9 +140,40 @@ class PopController(controller.CementBaseController):
 
     @controller.expose()
     def default(self):
-        items, state = get_activity(self.app.session, log)
+        items, state = WorkLog.iterate(fsm.DiffGetter(), self.app.session)
         display_diff(items, state[2])
         [self.app.session.delete(i) for i in items]
         self.app.session.commit()
 
-export = [StartController, EndController, ResumeController, ListController, DiffController, PopController]
+class GetRefController(controller.CementBaseController):
+    class Meta:
+        interface = controller.IController
+        label = 'getref'
+        description = 'get ref'
+        arguments = [(['-p', '--project'], dict(type=str, required=True))]
+
+    @controller.expose()
+    def default(self):
+        item = WorkLog.iterate(fsm.StartGetter(), self.app.session)
+        sa = item.start_attrs
+        if not sa:
+            exit(1)
+
+        if not sa.project == self.pargs.project:
+            exit(1)
+
+        print(sa.ref)
+
+class FlushController(controller.CementBaseController):
+    class Meta:
+        interface = controller.IController
+        label = 'flush'
+        description = 'flush'
+        arguments = []
+
+    @controller.expose()
+    def default(self):
+        for i in self.app.session.query(WorkLog).all(): self.app.session.delete(i)
+        self.app.session.commit()
+
+export = [StartController, EndController, ResumeController, ListController, DiffController, PopController, GetRefController, FlushController]
