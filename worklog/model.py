@@ -29,10 +29,10 @@ class WorkLog(Base):
     def __unicode__(self):
         return "%s %s %s" % (self.created_at, self.activity.ljust(6), self.description)
 
-def init(app):
-    app.log.debug(app.config.get('main', 'db'))
-    e = create_engine(app.config.get('main', 'db'))
-    app.session = scoped_session(sessionmaker(bind=e, autoflush=True))
+def init(db_url):
+    e = create_engine(db_url)
+    session = scoped_session(sessionmaker(bind=e, autoflush=True))
 
     Base.metadata.bind = e
     Base.metadata.create_all()
+    return session
