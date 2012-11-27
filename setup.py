@@ -3,15 +3,13 @@
 
 from setuptools import setup, find_packages
 import worklog
-
+from worklog import git_hooks_dir
 import sys
-from os.path import expanduser, join
 
-def get_usrdir():
-    if '--user' in sys.argv:
-        # FIXME
-        return expanduser("~/.local")
-    return '/usr'
+if not '--user' in sys.argv:
+    raise RuntimeError('Installing without --user is not supported')
+    # FIXME: githooks installer needs to know where to take the
+    # prepare-commit-msg hook from
 
 setup(
     name='worklog',
@@ -38,6 +36,6 @@ setup(
         'console_scripts': ['wl = worklog.core:main']},
 
     data_files = [
-        (join(get_usrdir(), 'lib', 'worklog', 'git-hooks'), ['git-hooks/prepare-commit-msg'])
+        (git_hooks_dir, ['git-hooks/prepare-commit-msg'])
     ]
 )

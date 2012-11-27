@@ -7,6 +7,10 @@ from cement.core import foundation, controller, handler
 from .model import WorkLog, StartAttrs
 from datetime import datetime
 from . import fsm
+import os
+import os.path
+from shutil import copyfile
+import stat
 
 #log = logging.getLogger(__name__)
 
@@ -176,4 +180,34 @@ class FlushController(controller.CementBaseController):
         for i in self.app.session.query(WorkLog).all(): self.app.session.delete(i)
         self.app.session.commit()
 
-export = [StartController, EndController, ResumeController, ListController, DiffController, PopController, GetRefController, FlushController]
+class GitHookInstallController(controller.CementBaseController):
+    class Meta:
+        interface = controller.IController
+        label = 'githookinstall'
+        description = 'githookinstall, assumes calling from git root dir'
+        arguments = [(['-p', '--project'], dict(type=str, required=True))]
+
+    @controller.expose()
+    def default(self):
+        hook_dir = os.path.join(os.getcwd(), ".git", "hooks")
+        if not os.path.isdir(hook_dir):
+            raise RuntimeError("I don't recognize this as a git root dir")
+
+        hook = os.path.join(hook_dir, "prepare-commit-msg")
+
+        if not os.path.isfile(hook):
+            copyfile(hook + ".sample", hook)
+            os.chmod(hook, stat.S_IXUSR | stat.S_IWUSR | stat.S_IRUSR)
+
+        from worklog import git_hooks_dir
+        hook_call = "%s %s $@\n" % (
+            os.path.join(git_hooks_dir,"prepare-commit-msg"),
+            self.pargs.project)
+
+        f = open(hook, "a")
+        f.write(hook_call)
+        f.close()
+
+export = [StartController, EndController, ResumeController, ListController,
+DiffController, PopController, GetRefController, FlushController,
+GitHookInstallController]
