@@ -9,6 +9,7 @@ from datetime import datetime
 from . import fsm
 import os
 import os.path
+from os.path import dirname,realpath,abspath,join
 from shutil import copyfile
 import stat
 
@@ -189,18 +190,18 @@ class GitHookInstallController(controller.CementBaseController):
 
     @controller.expose()
     def default(self):
-        hook_dir = os.path.join(os.getcwd(), ".git", "hooks")
+        hook_dir = join(os.getcwd(), ".git", "hooks")
         if not os.path.isdir(hook_dir):
             raise RuntimeError("I don't recognize this as a git root dir")
 
-        hook = os.path.join(hook_dir, "prepare-commit-msg")
+        hook = join(hook_dir, "prepare-commit-msg")
 
         if not os.path.isfile(hook):
             copyfile(hook + ".sample", hook)
             os.chmod(hook, stat.S_IXUSR | stat.S_IWUSR | stat.S_IRUSR)
 
-        from yworklog import git_hooks_dir
-        hook_call = "%s %s $@\n" % (
+        git_hooks_dir = join(dirname(abspath(realpath(__file__))), "git-hooks")
+        hook_call = "sh %s %s $@\n" % (
             os.path.join(git_hooks_dir,"prepare-commit-msg"),
             self.pargs.project)
 
