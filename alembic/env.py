@@ -8,8 +8,8 @@ import sys
 sys.path.insert(0, ".")
 # so we can access worklog in curdir
 
-from worklog.core import get_main_db
-from worklog import model
+from yworklog.core import get_main_db
+from yworklog import model
 
 
 # this is the Alembic Config object, which provides

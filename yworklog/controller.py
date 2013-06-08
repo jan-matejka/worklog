@@ -199,7 +199,7 @@ class GitHookInstallController(controller.CementBaseController):
             copyfile(hook + ".sample", hook)
             os.chmod(hook, stat.S_IXUSR | stat.S_IWUSR | stat.S_IRUSR)
 
-        from worklog import git_hooks_dir
+        from yworklog import git_hooks_dir
         hook_call = "%s %s $@\n" % (
             os.path.join(git_hooks_dir,"prepare-commit-msg"),
             self.pargs.project)

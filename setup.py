@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-import worklog
-from worklog import git_hooks_dir
+import yworklog
+from yworklog import git_hooks_dir
 import sys
 
 if not '--user' in sys.argv:
@@ -12,9 +12,9 @@ if not '--user' in sys.argv:
     # prepare-commit-msg hook from
 
 setup(
-    name='worklog',
-    version=worklog.__version__,
-    description='WorkLog',
+    name='yworklog',
+    version=yworklog.__version__,
+    description='YWorkLog',
     author='Jan Matejka',
     author_email='yac@blesmrt.net',
     url='https://github.com/yaccz/worklog',
@@ -33,7 +33,7 @@ setup(
     ],
 
     entry_points = {
-        'console_scripts': ['wl = worklog.core:main']},
+        'console_scripts': ['wl = yworklog.core:main']},
 
     data_files = [
         (git_hooks_dir, ['git-hooks/prepare-commit-msg'])
