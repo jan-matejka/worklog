@@ -12,7 +12,7 @@ from os.path import join
 log = logging.getLogger(__name__)
 
 def get_main_db():
-    return 'sqlite+pysqlite:///' +join(save_data_path('worklog'), 'db.sqlite')
+    return 'sqlite:///' +join(save_data_path('worklog'), 'db.sqlite')
 
 class WorkLogApp(foundation.CementApp):
     class Meta:

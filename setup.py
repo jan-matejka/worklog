@@ -22,7 +22,6 @@ setup(
         "setuptools",
         "sqlalchemy",
         "pyxdg",
-        "pysqlite",
         "alembic",
     ],
 
