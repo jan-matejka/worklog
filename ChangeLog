@@ -1,3 +1,6 @@
 0.0.5
 =====
-WorkLog renamed to YWorkLog as Worklog is already taken on pypi.
+* WorkLog renamed to YWorkLog as Worklog is already taken on pypi.
+
+* git hook now installs to module_dir/git-hooks instead of
+$HOME/.local/lib/worklog/git-hooks
