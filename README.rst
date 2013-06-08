@@ -2,6 +2,12 @@
 YWorkLog
 =========
 
+Stack based utility with CLI interface helping you to monitor time spent on
+tasks.
+
+The stack base helps with dealing with tasks interupted with other tasks,
+unfortunately it can't deal with tasks running in parallel (yet).
+
 Usage
 ======
 
