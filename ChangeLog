@@ -1,3 +1,11 @@
+0.0.7
+=====
+* [packaging] install git-hooks properly
+
+* [packaging] install alembic migrations as package_data
+
+* removing pysqlite stuff (∴ py < 2.5 won't be supported)
+
 0.0.6
 =====
 0.0.5 were uninstallable from pypi due to missing git-hook in the sdist
