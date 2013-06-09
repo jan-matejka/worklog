@@ -71,7 +71,14 @@ And wrap up
 Install
 =========
 
-::
+source::
 
     $ python setup.py install
+    $ cd yworklog/alembic
+    $ alembic upgrade head
+
+pypi::
+
+    $ pip install yworklog
+    $ cd $(dirname `python -c 'import yworklog; print yworklog.__file__'`)/alembic
     $ alembic upgrade head
