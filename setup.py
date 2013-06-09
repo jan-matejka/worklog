@@ -28,7 +28,12 @@ setup(
     entry_points = {
         'console_scripts': ['wl = yworklog.core:main']},
 
-    data_files = [
-        ('yworklog/git-hooks', ['git-hooks/prepare-commit-msg'])
-    ]
+    package_data = {
+        "yworklog": [
+            'git-hooks/prepare-commit-msg',
+            'alembic/*ini',
+            'alembic/*py',
+            'alembic/versions/*'
+        ]
+    }
 )
