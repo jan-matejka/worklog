@@ -1,0 +1,94 @@
+##
+wl
+##
+
+-----------------------------
+worklog personal time tracker
+-----------------------------
+
+.. include:: ../common/man1-meta.rst
+
+SYNOPSIS
+========
+
+  wl <command>
+
+DESCRIPTION
+===========
+
+Worklog is a modern personal time tracking software for the CLI.
+
+commands:
+
+- `man 1 wl-calc`
+- `man 1 wl-sum`
+- `man 1 wl-report`
+
+OPTIONS
+=======
+
+None
+
+EXAMPLES
+========
+
+wl requires a command::
+
+  $ wl
+  wl_dispatch: fatal: missing argument command
+  [1]
+
+  $ wl a-command
+  wl_dispatch: fatal: cannot execute wl-a-command
+  [1]
+
+BUILD
+=====
+
+::
+
+    $ make
+
+BUILD DEPENDENCIES
+------------------
+
+- `gnu make <https://www.gnu.org/software/make/>`_
+- `docutils <https://docutils.sourceforge.io/>`_
+- posix.1-2017 utilities
+
+INSTALLATION
+============
+
+Into system::
+
+    # make install
+
+Into user's HOME::
+
+    $ make install-home
+
+RUNTIME DEPENDENCIES
+--------------------
+
+- `zsh <https://www.zsh.org/>`_
+- `gnu awk <https://www.gnu.org/software/gawk/>`_
+- posix.1-2017 utilities
+- `gnu coreutils <http://gnu.org/software/coreutils>`_
+- https://github.com/jan-matejka/xdgenv - Runtime agnostic xdg environment variables initializer for
+  applications
+
+TESTING
+=======
+
+::
+
+    $ make check
+
+TESTING DEPENDENCIES
+====================
+
+- `dram - literate functional tests for the CLI <https://sr.ht/~rne/dram>`_
+
+.. include:: ../common/diagnostics.rst
+.. include:: ../common/license.rst
+.. include:: ../common/bugs.rst
