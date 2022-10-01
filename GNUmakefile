@@ -1,6 +1,9 @@
 .DEFAULT_GOAL := build
 
+DRAM         ?= dram
 DRAM_OPTS    ?= -s zsh -t rst $(DRAM_OPTS_EXTRA)
+RST2MAN      ?= rst2man
+RST2MAN_OPTS ?= --strict
 
 # common definitions
 build_dir     = _build
@@ -79,7 +82,7 @@ $(b_bin_dir)/%.py: $(src_dir)/%.py
 # build man pages
 $(b_man_dir)/%.1: Documentation/man/man1/%.rst
 
-	rst2man $< $@
+	$(RST2MAN) $(RST2MAN_OPTS) $< $@
 
 # install binaries
 $(i_bin_dir)/%: $(b_bin_dir)/%
@@ -112,7 +115,7 @@ test: check
 .PHONY: check
 check: build
 
-	PATH=$$PWD/$(build_dir)/bin:$$PATH dram $(DRAM_OPTS) dram/*
+	PATH=$$PWD/$(build_dir)/bin:$$PATH $(DRAM) $(DRAM_OPTS) dram/*
 
 # clean build/tests artefacts
 .PHONY: clean
