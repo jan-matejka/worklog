@@ -49,8 +49,7 @@ i_deps   += $(i_man_dir)
 i_deps   += $(bash_comp_dir) $(zsh_comp_dir)
 i_deps   += $(addprefix $(i_bin_dir)/,$(cmds))
 i_deps   += $(addprefix $(i_man_dir)/,$(mans))
-i_deps   += $(bash_comp_dir)/wl
-i_deps   += $(zsh_comp_dir)/_wl
+i_deps   += $(shell find -path ./$(bash_comp_dir)/wl -or -path ./$(zsh_comp_dir)/_wl)
 
 .PHONY: all
 all: build
