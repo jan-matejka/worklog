@@ -28,7 +28,7 @@ sources   = GNUmakefile $(src_dir) README.rst
 
 cmds      = $(patsubst $(src_dir)/%.zsh,%,$(wildcard $(src_dir)/*.zsh))
 cmds     += $(patsubst $(src_dir)/%,%,$(wildcard $(src_dir)/*.py))
-mans      = $(patsubst Documentation/man1/%.rst,%.1,$(wildcard Documentation/man1/*.rst))
+mans      = $(patsubst Documentation/man/man1/%.rst,%.1,$(wildcard Documentation/man/man1/*.rst))
 
 dirs      =
 dirs     += $(b_bin_dir) $(i_bin_dir)
@@ -77,7 +77,7 @@ $(b_bin_dir)/%.py: $(src_dir)/%.py
 	$(install_bin) $< $@
 
 # build man pages
-$(b_man_dir)/%.1: Documentation/man1/%.rst
+$(b_man_dir)/%.1: Documentation/man/man1/%.rst
 
 	rst2man $< $@
 
