@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := build
 
+DRAM_OPTS    ?= -s zsh -t rst $(DRAM_OPTS_EXTRA)
+
 # common definitions
 build_dir     = _build
 src_dir       = src
@@ -111,7 +113,7 @@ test: check
 .PHONY: check
 check: build
 
-	PATH=$$PWD/build/bin:$$PATH dram -s zsh -t rst dram/*
+	PATH=$$PWD/build/bin:$$PATH dram $(DRAM_OPTS) dram/*
 
 # clean build/tests artefacts
 .PHONY: clean
