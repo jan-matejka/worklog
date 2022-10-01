@@ -16,7 +16,10 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Worklog is a modern personal time tracking software for the CLI.
+Worklog is a modern, simple personal time tracking software for the CLI based on mature proven
+technologies.
+
+Tested on human. The author have been dogfooding The Worklog Format since Jun 2017.
 
 commands:
 
