@@ -1,0 +1,53 @@
+wl-sum
+######
+
+sum worklogs
+------------
+
+.. include:: ../common/man1-meta.rst
+
+SYNOPSIS
+========
+
+  wl sum <dir>
+
+DESCRIPTION
+===========
+
+wl-sum reads all files under the `<dir>` directory and prints the
+sum of logged time entries in all the files interpreted as worklogs.
+
+See `man 1 wl-calc` for more about worklogs.
+
+OPTIONS
+=======
+
+None
+
+EXAMPLES
+========
+
+setup::
+
+  $ mkdir root
+  $ cat >root/1.txt <<\EOF
+  > - 0 - 1
+  > EOF
+  $ cat >root/2.txt <<\EOF
+  > - 12 - 14
+  > EOF
+
+test::
+
+  $ wl-sum root
+  3
+
+SEE ALSO
+========
+
+* ``man 1 wl-calc``
+* ``man 1 wl``
+
+.. include:: ../common/diagnostics.rst
+.. include:: ../common/license.rst
+.. include:: ../common/bugs.rst

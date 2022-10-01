@@ -1,0 +1,224 @@
+#######
+wl-calc
+#######
+
+------------------------------------
+print the sum of logged time entries
+------------------------------------
+
+.. include:: ../common/man1-meta.rst
+
+SYNOPSIS
+========
+
+  wl calc [<worklog>]
+
+DESCRIPTION
+===========
+
+wl-calc reads log time entries from a `<worklog>` or from standard input if `<worklog>` is not
+given. `<worklog>` is a file containing The Worklog Format.
+
+The Worklog Format is generally line-oriented. Each line is a single time-log entry.
+
+Time-log entry consists of fields separated by whitespace.
+
+The fields are, in order:
+
+1. log indicator. Log indicator a single character. Only lines with log indicator of `-` are
+   counted.
+
+2. Start time in the `wl-time` defined in `FORMATS`_ section.
+
+3. A literal string `-`.
+
+4. End time in the `wl-time` defined in `FORMATS`_ section.
+
+5. Fields 5 and further are optional free text description of the log entry.
+
+FORMATS
+=======
+
+Formats here are defined using:
+
+- `BCP 14 <https://www.rfc-editor.org/info/bcp14>`_ :rfc:`2119` :rfc:`8174`
+- :rfc:`5234` - Augmented BNF for Syntax Specifications: ABNF.
+
+Terms `time-hour` and `time-minute` SHALL be interpreted as defined by :rfc:`3339#section-5.6`.
+
+wl-time:
+
+.. code-block:: ABNF
+
+   wl-time = time-hour ":" time-minute
+
+wl-time-out:
+
+.. code-block:: ABNF
+
+   wl-time-out = time-hour / time-hour ":" time-minute
+
+- `time-hour` is semantically equivalent to `time-hour ":" "0"`.
+- `time-hour ":0"` and `time-hour ":00"` SHALL not printed by `man 1 wl`.
+
+EXAMPLES
+========
+
+wl-calc reads worklog from stdin.
+
+test::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 1
+  > EOF
+  1
+
+wl-calc takes optional operand that is a file name with the contents of worklog.
+
+test::
+
+  $ cat >1.txt <<\EOF
+  > - 0 - 1
+  > EOF
+  $ wl-calc 1.txt
+  1
+
+wl-calc ignores lines not starting with '- '.
+
+test::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 1
+  > + 1 - 2
+  > EOF
+  1
+
+wl-calc ignores operates on first 4 fields of the worklog only.
+
+wl-calc is mathematically correct
+---------------------------------
+
+.. todo: this is ridiculous
+
+Hour Time Delta Tests
++++++++++++++++++++++
+
+Base case::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 1
+  > EOF
+  1
+
+n+1 case::
+
+  $ cat <<\EOF | wl-calc
+  > - 1 - 2
+  > EOF
+  1
+
+Multi-digit::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 10
+  > EOF
+  10
+
+  $ cat <<\EOF | wl-calc
+  > - 9 - 11
+  > EOF
+  2
+
+Hour Sum Tests::
+
+  $ cat <<\EOF | wl-calc
+  > - 1 - 2
+  > - 2 - 3
+  > EOF
+  2
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 1
+  > - 14 - 20
+  > EOF
+  7
+
+  $ cat <<\EOF | wl-calc
+  > - 8 - 12
+  > EOF
+  4
+
+Minute Tests
+------------
+::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 0:30
+  > EOF
+  0:30
+
+  $ cat <<\EOF | wl-calc
+  > - 0:20 - 0:30
+  > EOF
+  0:10
+
+  $ cat <<\EOF | wl-calc
+  > - 1:20 - 1:30
+  > EOF
+  0:10
+
+  $ cat <<\EOF | wl-calc
+  > - 1:20 - 1:30
+  > - 2:30 - 2:50
+  > EOF
+  0:30
+
+  $ cat <<\EOF | wl-calc
+  > - 1:20 - 1:30
+  > - 2:30 - 2:50
+  > - 3:00 - 3:50
+  > EOF
+  1:20
+
+Quirks
+------
+
+wl-calc implements general arithmetic on the fields 2 and 3 without any restrictions other than that
+Field 2 signifies hours and Field 3 signifies minutes.
+
+Out of range::
+
+  $ cat <<\EOF | wl-calc
+  > - 24 - 25
+  > EOF
+  1
+
+Negative::
+
+  $ cat <<\EOF | wl-calc
+  > - 1 - 0
+  > EOF
+  -1
+
+Overlap::
+
+  $ cat <<\EOF | wl-calc
+  > - 0 - 1
+  > - 0 - 1
+  > EOF
+  2
+
+wl-calc can take both stdin and file operand. It appears the implementation operates on the stdin
+only. However this a defect and the result should be treated as undefined::
+
+  $ cat >1.txt <<\EOF
+  > - 0 - 1 foo
+  > EOF
+  $ cat <<\EOF | wl-calc 1.txt
+  > - 1 - 3 bar
+  > EOF
+  1
+
+.. include:: ../common/diagnostics.rst
+.. include:: ../common/license.rst
+.. include:: ../common/bugs.rst

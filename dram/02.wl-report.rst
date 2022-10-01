@@ -1,0 +1,53 @@
+#########
+wl-report
+#########
+
+---------------------------------------------------
+print the free text descriptions of the log entries
+---------------------------------------------------
+
+.. include:: ../common/man1-meta.rst
+
+SYNOPSIS
+========
+
+  wl report <worklog>
+
+DESCRIPTION
+===========
+
+wl-report prints the free text descriptions of the time-log entries in a given `<worklog>` sorted
+and uniqified.
+
+
+EXAMPLES
+========
+
+base case test::
+
+  $ cat >1.txt <<\EOF
+  > - 0 - 1 foo
+  > EOF
+  $ wl-report 1.txt
+  foo 
+
+wl-report respects the field 1 of worklog::
+
+  $ cat >1.txt <<\EOF
+  > - 0 - 1 foo
+  > + 1 - 2 bar
+  > EOF
+  $ wl-report 1.txt
+  foo 
+
+wl-report ignores fields 2, 3, and 4::
+
+  $ cat >1.txt <<\EOF
+  > - - - - foo
+  > EOF
+  $ wl-report 1.txt
+  foo 
+
+.. include:: ../common/diagnostics.rst
+.. include:: ../common/license.rst
+.. include:: ../common/bugs.rst

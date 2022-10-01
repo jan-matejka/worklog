@@ -1,0 +1,20 @@
+wl-sum-time-delta
+#################
+
+wl-sum-time-delta reads a line separated list of `time-spec` members from stdin, sums them and
+prints them out in `time-spec-out` format.
+
+Base case test::
+
+  $ cat <<EOF | wl-sum-time-delta
+  > 1:20
+  > EOF
+  1:20
+
+Sum Test::
+
+  $ cat <<EOF | wl-sum-time-delta
+  > 1:20
+  > 2:30
+  > EOF
+  3:50
