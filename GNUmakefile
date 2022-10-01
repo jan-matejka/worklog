@@ -113,7 +113,7 @@ test: check
 .PHONY: check
 check: build
 
-	PATH=$$PWD/build/bin:$$PATH dram $(DRAM_OPTS) dram/*
+	PATH=$$PWD/$(build_dir)/bin:$$PATH dram $(DRAM_OPTS) dram/*
 
 # clean build/tests artefacts
 .PHONY: clean
